@@ -8,20 +8,22 @@
       </div>
       <Dropdown :menus="menus" @onItemClick="onItemClick"></Dropdown>
     </header>
-    <ul
+    <virtualList
       class="messages"
-      v-chat-scroll
       v-show="conversation"
       ref="messagesUl"
       @dragenter="onDragEnter"
       @drop="onDrop"
       @dragover="onDragOver"
       @dragleave="onDragLeave"
+      :size="12"
+      :remain="12"
     >
-      <li v-show="!user.app_id" class="encryption tips">
+      <div :key="0" v-show="!user.app_id" class="encryption tips">
         <div class="bubble">{{$t('encryption')}}</div>
-      </li>
+      </div>
       <MessageItem
+        class="item"
         v-for="(item, i) in messages"
         v-bind:key="item.id"
         v-bind:message="item"
@@ -31,7 +33,7 @@
         v-bind:me="me"
         @user-click="onUserClick"
       />
-    </ul>
+    </virtualList>
     <div v-show="conversation" class="action">
       <div v-if="!participant" class="removed">{{$t('home.removed')}}</div>
       <div v-if="participant" class="input">
@@ -80,6 +82,7 @@ import {
   MuteDuration
 } from '@/utils/constants.js'
 import { isImage, base64ToImage } from '@/utils/attachment_util.js'
+import virtualList from 'vue-virtual-scroll-list'
 import Dropdown from '@/components/menu/Dropdown.vue'
 import Avatar from '@/components/Avatar.vue'
 import Details from '@/components/Details.vue'
@@ -166,7 +169,8 @@ export default {
     Avatar,
     Details,
     MessageItem,
-    FileContainer
+    FileContainer,
+    virtualList
   },
   computed: {
     ...mapGetters({

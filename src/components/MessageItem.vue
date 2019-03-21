@@ -1,5 +1,5 @@
 <template>
-  <li>
+  <div>
     <div v-if="unread === message.messageId" class="unread-divide">
       <span>{{$t('unread_message')}}</span>
     </div>
@@ -85,7 +85,7 @@
         <spinner class="loading" v-if="messageType(message) === 'image' && loading"></spinner>
       </div>
     </div>
-  </li>
+  </div>
 </template>
 
 <script>
