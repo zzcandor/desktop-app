@@ -16,6 +16,8 @@ import blaze from '@/blaze/blaze'
 import i18n from '@/utils/i18n.js'
 import { faArrowLeft, faArrowRight, faChevronDown, faSearch } from '@fortawesome/free-solid-svg-icons'
 import { faPaperPlane } from '@fortawesome/free-regular-svg-icons'
+import VueVirtualScroller from 'vue-virtual-scroller'
+import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 
 const fontawesome = require('@fortawesome/vue-fontawesome')
 library.add(faArrowLeft, faArrowRight, faChevronDown, faSearch, faPaperPlane)
@@ -28,6 +30,7 @@ Vue.use(Dialog)
 Vue.use(Menu)
 Vue.use(Toast)
 Vue.use(ImageViewer)
+Vue.use(VueVirtualScroller)
 
 Vue.axios.defaults.baseURL = 'https://api.mixin.one/'
 Vue.axios.defaults.headers.post['Content-Type'] = 'application/json'

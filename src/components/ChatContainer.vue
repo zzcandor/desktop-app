@@ -8,30 +8,40 @@
       </div>
       <Dropdown :menus="menus" @onItemClick="onItemClick"></Dropdown>
     </header>
-    <ul
+    <DynamicScroller
+      v-show="messages.length>0"
       class="messages"
-      v-chat-scroll
-      v-show="conversation"
-      ref="messagesUl"
-      @dragenter="onDragEnter"
-      @drop="onDrop"
-      @dragover="onDragOver"
-      @dragleave="onDragLeave"
+      :items="messages"
+      :min-item-size="54"
+      ref="scroller"
+      key-field="messageId"
     >
-      <li v-show="!user.app_id" class="encryption tips">
-        <div class="bubble">{{$t('encryption')}}</div>
-      </li>
-      <MessageItem
-        v-for="(item, i) in messages"
-        v-bind:key="item.id"
-        v-bind:message="item"
-        v-bind:prev="messages[i-1]"
-        v-bind:unread="unreadMessageId"
-        v-bind:conversation="conversation"
-        v-bind:me="me"
-        @user-click="onUserClick"
-      />
-    </ul>
+      <template #before>
+        <div v-show="!user.app_id" class="encryption tips">
+          <div class="bubble">{{$t('encryption')}}</div>
+        </div>
+      </template>
+
+      <template v-slot="{ item, index, active }">
+        <DynamicScrollerItem
+          :item="item"
+          :active="active"
+          :size-dependencies="[
+            item,
+          ]"
+          :data-index="index"
+          :data-active="active"
+        >
+          <MessageItem
+            v-bind:message="item"
+            v-bind:prev="messages[index-1]"
+            v-bind:unread="unreadMessageId"
+            v-bind:conversation="conversation"
+            v-bind:me="me"
+          ></MessageItem>
+        </DynamicScrollerItem>
+      </template>
+    </DynamicScroller>
     <div v-show="conversation" class="action">
       <div v-if="!participant" class="removed">{{$t('home.removed')}}</div>
       <div v-if="participant" class="input">
@@ -89,6 +99,7 @@ import conversationDao from '@/dao/conversation_dao'
 import userDao from '@/dao/user_dao.js'
 import conversationAPI from '@/api/conversation.js'
 import moment from 'moment'
+
 export default {
   name: 'ChatContainer',
   data() {
@@ -109,7 +120,7 @@ export default {
     conversation: function(newC, oldC) {
       if (!!newC && (!oldC || newC.conversationId !== oldC.conversationId)) {
         let unread = conversationDao.indexUnread(newC.conversationId)
-        if (unread > 0) {
+        if (unread > 0 && this.messages.length > 0) {
           this.unreadMessageId = this.messages[this.messages.length - unread].messageId
         } else {
           this.unreadMessageId = ''
@@ -157,10 +168,7 @@ export default {
       }
     }
   },
-  updated() {
-    let scrollHeight = this.$refs.messagesUl.scrollHeight
-    this.$refs.messagesUl.scrollTop = scrollHeight
-  },
+  updated() {},
   components: {
     Dropdown,
     Avatar,
@@ -389,6 +397,7 @@ export default {
         status: status
       }
       this.$store.dispatch('sendMessage', message)
+      this.$refs.scroller.scrollToBottom()
     }
   }
 }

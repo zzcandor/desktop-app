@@ -34,7 +34,9 @@ export default {
 
   getMessages: state => {
     if (state.currentConversationId) {
-      return state.messages[state.currentConversationId]
+      return state.messages[state.currentConversationId] || []
+    } else {
+      return []
     }
   },
 
