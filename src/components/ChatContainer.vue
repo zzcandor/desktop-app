@@ -16,8 +16,9 @@
       @drop="onDrop"
       @dragover="onDragOver"
       @dragleave="onDragLeave"
-      :size="12"
-      :remain="12"
+      :size="10"
+      :remain="20"
+      :bench="10"
     >
       <div :key="0" v-show="!user.app_id" class="encryption tips">
         <div class="bubble">{{$t('encryption')}}</div>

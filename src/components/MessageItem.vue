@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="root">
     <div v-if="unread === message.messageId" class="unread-divide">
       <span>{{$t('unread_message')}}</span>
     </div>
@@ -294,7 +294,7 @@ export default {
 img {
   max-width: 100%;
 }
-li {
+.root {
   margin-bottom: 0.6rem;
 }
 .unread-divide {
