@@ -9983,6 +9983,11 @@ vue-property-decorator@^7.0.0:
   dependencies:
     vue-class-component "^6.2.0"
 
+vue-recyclerview@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/vue-recyclerview/-/vue-recyclerview-0.4.1.tgz#16ed322e7c76b13043cb46e80541c7654fe27a28"
+  integrity sha512-NuadFeWQuK5s70W+SNHksPevf26ENImg+pYjlFgWNCNjcgv0L0rJpunceI/OdGngqBV9wzI/82Gu288h0+h+bg==
+
 vue-router@^3.0.1:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-3.0.2.tgz#dedc67afe6c4e2bc25682c8b1c2a8c0d7c7e56be"
