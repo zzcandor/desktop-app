@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="root">
     <div class="bubble">
-      <img class="sticker" :src="message.assetUrl">
+      <img class="sticker" :src="message.assetUrl" :style="style">
       <span class="time">
         {{message.lt}}
         <ICSending
@@ -40,17 +40,23 @@ export default {
     ICSend,
     ICRead
   },
-
+  computed: {
+    style: function() {
+      let { assetHeight, assetWidth } = this.message
+      return {
+        width: '120px',
+        height: (120 * assetHeight) / assetWidth + 'px'
+      }
+    }
+  },
   props: ['conversation', 'message', 'me', 'showName']
 }
 </script>
 <style lang="scss" scoped>
 .root {
-  .buble {
-    max-width: 6rem;
-    .sticker {
-      max-height: 6rem;
-    }
+  .bubble {
+    display: flex;
+    flex-direction: column;
   }
 }
 </style>

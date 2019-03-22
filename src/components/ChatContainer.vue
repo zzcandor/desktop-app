@@ -13,7 +13,7 @@
         v-for="(item, index) of messages"
         :key="index"
         :index="index"
-        :height="100"
+        :height="calculateHeight(item)"
         :message="item"
         :me="me"
         :prev="messages[index-1]"
@@ -69,6 +69,7 @@ import {
   MessageStatus,
   MuteDuration
 } from '@/utils/constants.js'
+import calculateSize from 'calculate-size'
 import { isImage, base64ToImage } from '@/utils/attachment_util.js'
 import VirtualList from 'vue-virtual-scroll-list'
 import Dropdown from '@/components/menu/Dropdown.vue'
@@ -198,6 +199,15 @@ export default {
   },
   lastEnter: null,
   methods: {
+    calculateHeight: function(message) {
+      if (message.type.endsWith('_TEXT')) {
+        return 18
+      } else if (message.type.endsWith('_STICKER')) {
+        return (120 * (120 * message.assetHeight)) / message.assetWidth
+      } else {
+        return 100
+      }
+    },
     isMute: function(conversation) {
       if (conversation.category === ConversationCategory.CONTACT && conversation.ownerMuteUntil) {
         if (moment().isBefore(conversation.ownerMuteUntil)) {

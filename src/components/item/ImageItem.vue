@@ -1,14 +1,12 @@
 <template>
   <div class="root">
     <div class="bubble">
-      <span>
-        <img
-          :src="media(message)"
-          :loading="'data:' + message.mediaMimeType + ';base64,' + message.thumbImage"
-          :class="borderSet(message)"
-          :style="borderSetObject(message)"
-        >
-      </span>
+      <img
+        class="image"
+        :src="media(message)"
+        :loading="'data:' + message.mediaMimeType + ';base64,' + message.thumbImage"
+        :style="borderSetObject(message)"
+      >
       <span class="time">
         {{message.lt}}
         <ICSending
@@ -64,22 +62,22 @@ export default {
       }
       return message.mediaUrl
     },
-    borderSetObject: message => {
-      if (1.5 * message.mediaWidth > message.mediaHeight) {
-        return { width: message.mediaWidth + 'px' }
-      }
-      if (3 * message.mediaWidth < message.mediaHeight) {
-        return { width: message.mediaWidth + 'px' }
-      }
-      return { height: message.mediaHeight + 'px' }
-    }
+    borderSetObject: message => {}
   }
 }
 </script>
 <style lang="scss" scoped>
 .root {
   .bubble {
-    max-width: 300px;
+    display: flex;
+    .image {
+      border-radius: 3px;
+      height: 100px;
+      width: 100px;
+    }
+    .time {
+      color: white;
+    }
   }
 }
 </style>
