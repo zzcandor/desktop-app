@@ -69,7 +69,6 @@ import {
   MessageStatus,
   MuteDuration
 } from '@/utils/constants.js'
-import calculateSize from 'calculate-size'
 import { isImage, base64ToImage } from '@/utils/attachment_util.js'
 import VirtualList from 'vue-virtual-scroll-list'
 import Dropdown from '@/components/menu/Dropdown.vue'
@@ -201,7 +200,7 @@ export default {
   methods: {
     calculateHeight: function(message) {
       if (message.type.endsWith('_TEXT')) {
-        return 18
+        return 100
       } else if (message.type.endsWith('_STICKER')) {
         return (120 * (120 * message.assetHeight)) / message.assetWidth
       } else {
