@@ -8,33 +8,20 @@
       </div>
       <Dropdown :menus="menus" @onItemClick="onItemClick"></Dropdown>
     </header>
-    <virtualList
-      class="messages"
-      v-show="conversation"
-      ref="messagesUl"
-      @dragenter="onDragEnter"
-      @drop="onDrop"
-      @dragover="onDragOver"
-      @dragleave="onDragLeave"
-      :size="10"
-      :remain="20"
-      :bench="10"
-    >
-      <div :key="0" v-show="!user.app_id" class="encryption tips">
-        <div class="bubble">{{$t('encryption')}}</div>
-      </div>
+    <VirtualList class="messages" ref="vsl" :size="100" :remain="50" :start="startIndex">
       <MessageItem
-        class="item"
-        v-for="(item, i) in messages"
-        v-bind:key="item.id"
-        v-bind:message="item"
-        v-bind:prev="messages[i-1]"
-        v-bind:unread="unreadMessageId"
-        v-bind:conversation="conversation"
-        v-bind:me="me"
-        @user-click="onUserClick"
-      />
-    </virtualList>
+        v-for="(item, index) of messages"
+        :key="index"
+        :index="index"
+        :height="100"
+        :message="item"
+        :me="me"
+        :prev="messages[index-1]"
+        :unread="unreadMessageId"
+        :conversation="conversation"
+      >{{item}}</MessageItem>
+    </VirtualList>
+
     <div v-show="conversation" class="action">
       <div v-if="!participant" class="removed">{{$t('home.removed')}}</div>
       <div v-if="participant" class="input">
@@ -83,7 +70,7 @@ import {
   MuteDuration
 } from '@/utils/constants.js'
 import { isImage, base64ToImage } from '@/utils/attachment_util.js'
-import virtualList from 'vue-virtual-scroll-list'
+import VirtualList from 'vue-virtual-scroll-list'
 import Dropdown from '@/components/menu/Dropdown.vue'
 import Avatar from '@/components/Avatar.vue'
 import Details from '@/components/Details.vue'
@@ -106,7 +93,8 @@ export default {
       MessageStatus: MessageStatus,
       inputFlag: false,
       dragging: false,
-      file: null
+      file: null,
+      startIndex: 0
     }
   },
   watch: {
@@ -114,6 +102,7 @@ export default {
       if (!!newC && (!oldC || newC.conversationId !== oldC.conversationId)) {
         let unread = conversationDao.indexUnread(newC.conversationId)
         if (unread > 0) {
+          this.startIndex = this.messages.length - unread
           this.unreadMessageId = this.messages[this.messages.length - unread].messageId
         } else {
           this.unreadMessageId = ''
@@ -161,17 +150,14 @@ export default {
       }
     }
   },
-  updated() {
-    let scrollHeight = this.$refs.messagesUl.scrollHeight
-    this.$refs.messagesUl.scrollTop = scrollHeight
-  },
+
   components: {
     Dropdown,
     Avatar,
     Details,
     MessageItem,
     FileContainer,
-    virtualList
+    VirtualList
   },
   computed: {
     ...mapGetters({
@@ -385,15 +371,16 @@ export default {
       this.$refs.box.innerText = ''
       event.stopPropagation()
       event.preventDefault()
-      const category = this.user.app_id ? 'PLAIN_TEXT' : 'SIGNAL_TEXT'
-      const status = MessageStatus.SENDING
-      const message = {
-        conversationId: this.conversation.conversationId,
-        content: text.trim(),
-        category: category,
-        status: status
-      }
-      this.$store.dispatch('sendMessage', message)
+      this.startIndex = parseInt(text)
+      // const category = this.user.app_id ? 'PLAIN_TEXT' : 'SIGNAL_TEXT'
+      // const status = MessageStatus.SENDING
+      // const message = {
+      //   conversationId: this.conversation.conversationId,
+      //   content: text.trim(),
+      //   category: category,
+      //   status: status
+      // }
+      // this.$store.dispatch('sendMessage', message)
     }
   }
 }
@@ -442,7 +429,6 @@ export default {
     flex: 1;
     height: 100%;
     overflow-x: hidden;
-    padding: 0.8rem;
     box-sizing: border-box;
   }
 

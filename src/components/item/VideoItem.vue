@@ -6,12 +6,10 @@
         v-if="showName"
         v-bind:style="{color: Colors[message.userIdentityNumber % Colors.length]}"
       >{{message.userFullName}}</span>
-      <div class="contact" @click="$emit('user-click')">
-        <Avatar id="avatar" :user="user"/>
+      <div class="video">
         <div class="content">
-          <span class="name">{{message.sharedUserFullName}}</span>
+          <video class="media" :src="message.mediaUrl" controls="controls" :style="video"></video>
           <div class="bottom">
-            <span class="number">{{message.sharedUserIdentityNumber}}</span>
             <span class="time">
               {{message.lt}}
               <ICSending
@@ -38,16 +36,14 @@
   </div>
 </template>
 <script>
-import Avatar from './Avatar'
-import userDao from '@/dao/user_dao.js'
-import ICSending from '../assets/images/ic_status_clock.svg'
-import ICSend from '../assets/images/ic_status_send.svg'
-import ICRead from '../assets/images/ic_status_read.svg'
+import ICSending from '@/assets/images/ic_status_clock.svg'
+import ICSend from '@/assets/images/ic_status_send.svg'
+import ICRead from '@/assets/images/ic_status_read.svg'
 import { MessageStatus, NameColors } from '@/utils/constants.js'
+import { mapGetters } from 'vuex'
 export default {
   props: ['conversation', 'message', 'me', 'showName'],
   components: {
-    Avatar,
     ICSending,
     ICSend,
     ICRead
@@ -60,16 +56,30 @@ export default {
   },
   methods: {
     messageOwnership: function() {
+      let { message, me } = this
       return {
-        send: this.message.userId === this.me.user_id,
-        receive: this.message.userId !== this.me.user_id
+        send: message.userId === me.user_id,
+        receive: message.userId !== me.user_id
       }
     }
   },
   computed: {
-    user: function() {
-      return userDao.findUserById(this.message.sharedUserId)
-    }
+    video: function() {
+      let { mediaWidth, mediaHeight } = this.message
+      let width = 200
+      let height = (200 / mediaWidth) * mediaHeight
+      if (height > 400) {
+        height = 400
+        width = (400 / mediaHeight) * mediaWidth
+      }
+      return {
+        width: `${width}px`,
+        height: `${height}px`
+      }
+    },
+    ...mapGetters({
+      attachment: 'attachment'
+    })
   }
 }
 </script>
@@ -87,27 +97,21 @@ export default {
     white-space: nowrap;
     margin-bottom: 0.2rem;
   }
-  .contact {
+  .video {
     padding: 12px;
     background: white;
     display: flex;
     flex-direction: row;
     align-content: center;
-    width: 12rem;
     border-radius: 0.4rem;
     box-shadow: 1px 1px 1px #33333333;
-    #avatar {
-      width: 42px;
-      height: 42px;
-      margin-right: 12px;
-    }
     .content {
       display: flex;
       flex: 1;
       flex-direction: column;
       text-align: start;
       overflow: hidden;
-      .name {
+      .media {
         font-size: 1rem;
         overflow: hidden;
         white-space: nowrap;
@@ -115,18 +119,13 @@ export default {
       }
       .bottom {
         display: flex;
-        justify-content: space-between;
-        .number {
-          color: #88888888;
-          font-size: 0.8rem;
-          margin-top: 6px;
-        }
+        justify-content: flex-end;
         .time {
           color: #8799a5;
           display: flex;
           float: right;
           font-size: 0.75rem;
-          bottom: 0.3rem;
+          bottom: 0.2rem;
           right: 0.2rem;
           align-items: flex-end;
           .icon {

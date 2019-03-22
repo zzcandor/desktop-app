@@ -36,9 +36,9 @@
   </div>
 </template>
 <script>
-import ICSending from '../assets/images/ic_status_clock.svg'
-import ICSend from '../assets/images/ic_status_send.svg'
-import ICRead from '../assets/images/ic_status_read.svg'
+import ICSending from '@/assets/images/ic_status_clock.svg'
+import ICSend from '@/assets/images/ic_status_send.svg'
+import ICRead from '@/assets/images/ic_status_read.svg'
 import { MessageStatus, NameColors } from '@/utils/constants.js'
 import { mapGetters } from 'vuex'
 export default {
