@@ -8,30 +8,7 @@
       </div>
       <Dropdown :menus="menus" @onItemClick="onItemClick"></Dropdown>
     </header>
-    <ul
-      class="messages"
-      v-chat-scroll
-      v-show="conversation"
-      ref="messagesUl"
-      @dragenter="onDragEnter"
-      @drop="onDrop"
-      @dragover="onDragOver"
-      @dragleave="onDragLeave"
-    >
-      <li v-show="!user.app_id" class="encryption tips">
-        <div class="bubble">{{$t('encryption')}}</div>
-      </li>
-      <MessageItem
-        v-for="(item, i) in messages"
-        v-bind:key="item.id"
-        v-bind:message="item"
-        v-bind:prev="messages[i-1]"
-        v-bind:unread="unreadMessageId"
-        v-bind:conversation="conversation"
-        v-bind:me="me"
-        @user-click="onUserClick"
-      />
-    </ul>
+    <App class="messages"></App>
     <div v-show="conversation" class="action">
       <div v-if="!participant" class="removed">{{$t('home.removed')}}</div>
       <div v-if="participant" class="input">
@@ -89,6 +66,7 @@ import conversationDao from '@/dao/conversation_dao'
 import userDao from '@/dao/user_dao.js'
 import conversationAPI from '@/api/conversation.js'
 import moment from 'moment'
+import App from './demo/App.vue'
 export default {
   name: 'ChatContainer',
   data() {
@@ -158,15 +136,16 @@ export default {
     }
   },
   updated() {
-    let scrollHeight = this.$refs.messagesUl.scrollHeight
-    this.$refs.messagesUl.scrollTop = scrollHeight
+    // let scrollHeight = this.$refs.messagesUl.scrollHeight
+    // this.$refs.messagesUl.scrollTop = scrollHeight
   },
   components: {
     Dropdown,
     Avatar,
     Details,
     MessageItem,
-    FileContainer
+    FileContainer,
+    App
   },
   computed: {
     ...mapGetters({
