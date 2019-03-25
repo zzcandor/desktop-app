@@ -30,7 +30,7 @@ class MessageDao {
   }
   getMessages(conversationId) {
     const stmt = db.prepare(
-      'SELECT m.message_id AS messageId, m.conversation_id AS conversationId, u.user_id AS userId, ' +
+      'SELECT m.message_id AS id, m.conversation_id AS conversationId, u.user_id AS userId, ' +
         'u.full_name AS userFullName, u.identity_number AS userIdentityNumber, u.app_id AS appId, m.category AS type, ' +
         'm.content AS content, m.created_at AS createdAt, m.status AS status, m.media_status AS mediaStatus, m.media_waveform AS mediaWaveform, ' +
         'm.name AS mediaName, m.media_mime_type AS mediaMimeType, m.media_size AS mediaSize, m.media_width AS mediaWidth, m.media_height AS mediaHeight, ' +
